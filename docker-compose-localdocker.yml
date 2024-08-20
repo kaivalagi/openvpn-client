@@ -1,7 +1,7 @@
 services:
-  openvpn-client:
+  openvps-client:
     image: dperson/openvpn-client
-    container_name: openvpn-client
+    container_name: openvps-client
     cap_add:
       - NET_ADMIN
     devices:
@@ -16,7 +16,7 @@ services:
       - DEFAULT_GATEWAY="false"
       - DNS="true"
     volumes:
-      - /mnt/volume1/containers/openvpn:/vpn
+      - E:\Users\Mark\Source\GitHub\openvpn-client\.config:/vpn
     healthcheck:
       test: curl --fail ifconfig.me || exit 1
       interval: 60s
@@ -26,16 +26,16 @@ services:
     restart: unless-stopped    
   curl-test:
     image: curlimages/curl:latest
-    network_mode: "service:openvpn-client"
+    network_mode: "service:openvps-client"
     command: curl ifconfig.me
     depends_on:
-      openvpn-client:
+      openvps-client:
         condition: service_healthy          
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
-    network_mode: "service:openvpn-client"
+    network_mode: "service:openvps-client"
     depends_on:
-      openvpn-client:
+      openvps-client:
         condition: service_healthy            
     environment:
       - PUID=1000
@@ -44,6 +44,6 @@ services:
       - WEBUI_PORT=8080
       - TORRENTING_PORT=6881
     volumes:
-      - /mnt/volume1/containers/qbittorrent:/config
-      - /mnt/volume1/downloads:/downloads
+      - E:\Temp\Docker\Config:/config
+      - E:\Temp\Docker\Downloads:/downloads #optional
     restart: unless-stopped
